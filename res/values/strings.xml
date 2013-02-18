@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 	<string name="app_name">Libr Client</string>
+	<string name="fetchBooksInfo">Get books info</string>
 </resources>
