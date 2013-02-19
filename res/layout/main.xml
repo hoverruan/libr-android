@@ -7,10 +7,10 @@
 	<Button
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:text="@string/fetchBooksInfo"
+			android:text="@string/fetch_books_info"
 			android:id="@+id/button"/>
 	<TextView
 			android:layout_width="fill_parent"
 			android:layout_height="wrap_content"
-			android:id="@+id/responseContent" android:layout_gravity="left|center_vertical"/>
+			android:id="@+id/response_content" android:layout_gravity="left|center_vertical"/>
 </LinearLayout>
