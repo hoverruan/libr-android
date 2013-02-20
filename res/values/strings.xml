@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Libr Client</string>
+	<string name="app_name">Libr</string>
 	<string name="fetch_books_info">Get books info</string>
 	<string name="failed_download">Failed to download content</string>
 	<string name="failed_not_connected">No available connection</string>
+	<string name="book_image_description">Book image</string>
 </resources>

@@ -10,23 +10,22 @@ import static com.github.hoverruan.libr.mobile.LibrConstants.TAG;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
  * @author Hover Ruan
  */
-public class DownloadTask extends AsyncTask<String, Void, String> {
+public abstract class DownloadTask<Result> extends AsyncTask<String, Void, Result> {
 
-    private Context context;
+    public static final String CACHE_DIR = "com.github.hoverruan/libr/";
+    protected Context context;
 
     public DownloadTask(Context context) {
         this.context = context;
     }
 
-    protected String doInBackground(String... urls) {
+    protected Result doInBackground(String... urls) {
         if (!isConnected()) {
             Log.w(LibrConstants.TAG, "No available connection");
             return null;
@@ -40,7 +39,9 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
         }
     }
 
-    private String downloadFromUrl(String resourceUrl) throws IOException {
+    protected abstract Result readIt(InputStream stream) throws IOException;
+
+    private Result downloadFromUrl(String resourceUrl) throws IOException {
         InputStream is = null;
 
         try {
@@ -63,17 +64,6 @@ public class DownloadTask extends AsyncTask<String, Void, String> {
                 is.close();
             }
         }
-    }
-
-    private String readIt(InputStream stream) throws IOException {
-        Reader reader = new InputStreamReader(stream, "UTF-8");
-        char[] buffer = new char[1024];
-        StringBuilder builder = new StringBuilder();
-        int len;
-        while ((len = reader.read(buffer)) > 0) {
-            builder.append(buffer, 0, len);
-        }
-        return builder.toString();
     }
 
     private boolean isConnected() {

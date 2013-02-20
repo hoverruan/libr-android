@@ -7,7 +7,7 @@ import java.util.Date;
  */
 public class Book {
     private long id;
-    private User author;
+    private String author;
     private Date createdAt;
     private Date updatedAt;
     private String image;
@@ -22,11 +22,11 @@ public class Book {
         this.id = id;
     }
 
-    public User getAuthor() {
+    public String getAuthor() {
         return author;
     }
 
-    public void setAuthor(User author) {
+    public void setAuthor(String author) {
         this.author = author;
     }
 
