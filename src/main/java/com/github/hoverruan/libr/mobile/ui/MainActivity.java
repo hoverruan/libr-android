@@ -1,10 +1,11 @@
 package com.github.hoverruan.libr.mobile.ui;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Window;
 import com.github.hoverruan.libr.mobile.R;
 import com.github.hoverruan.libr.mobile.domain.Book;
 import com.github.hoverruan.libr.mobile.domain.BookList;
@@ -16,12 +17,14 @@ import java.util.List;
 /**
  * @author Hover Ruan
  */
-public class MainActivity extends Activity {
+public class MainActivity extends SherlockActivity {
 
     private TextView responseContentView;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
         setContentView(R.layout.main);
 
@@ -30,6 +33,7 @@ public class MainActivity extends Activity {
         Button button = (Button) findViewById(R.id.button);
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
+                setSupportProgressBarIndeterminateVisibility(true);
                 new DownloadBooksInfo().execute("http://libr.herokuapp.com/api/books");
             }
         });
@@ -47,6 +51,7 @@ public class MainActivity extends Activity {
                 responseContentView.setText(String.format("Got %d books:\n%s", bookList.getTotalCount(),
                         getAllBooksName(bookList.getBooks())));
             }
+            setSupportProgressBarIndeterminateVisibility(false);
         }
 
         private String getAllBooksName(List<Book> books) {
