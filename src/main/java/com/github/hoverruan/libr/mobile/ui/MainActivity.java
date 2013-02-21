@@ -4,15 +4,18 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
-import com.actionbarsherlock.R;
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Window;
+import static com.github.hoverruan.libr.mobile.LibrConstants.TAG;
+import com.github.hoverruan.libr.mobile.R;
 import com.github.hoverruan.libr.mobile.domain.Book;
 import com.github.hoverruan.libr.mobile.domain.BookList;
 import com.github.hoverruan.libr.mobile.domain.BookParser;
@@ -27,6 +30,8 @@ import java.util.List;
  */
 public class MainActivity extends SherlockListActivity {
 
+    private List<Book> books;
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -36,13 +41,16 @@ public class MainActivity extends SherlockListActivity {
         new DownloadBooksInfo().execute("http://libr.herokuapp.com/api/books");
     }
 
+    protected void onListItemClick(ListView l, View v, int position, long id) {
+        Book book = books.get(position);
+        Log.i(TAG, book.getName() + " selected");
+    }
+
     private class BookListAdapter extends BaseAdapter {
 
         private LayoutInflater inflater;
-        private List<Book> books;
 
-        private BookListAdapter(Context context, List<Book> books) {
-            this.books = books;
+        private BookListAdapter(Context context) {
             this.inflater = LayoutInflater.from(context);
         }
 
@@ -71,11 +79,8 @@ public class MainActivity extends SherlockListActivity {
             TextView bookNameTextView = (TextView) convertView.findViewById(R.id.book_name);
             bookNameTextView.setText(book.getName());
 
-            TextView bookIsbnTextView = (TextView) convertView.findViewById(R.id.book_isbn);
-            bookIsbnTextView.setText("ISBN: " + book.getIsbn());
-
             TextView bookAuthorTextView = (TextView) convertView.findViewById(R.id.book_author);
-            bookAuthorTextView.setText("作者: " + (book.getAuthor() == null ? "" : book.getAuthor()));
+            bookAuthorTextView.setText("作者: " + (book.getAuthor() == null ? "无" : book.getAuthor()));
 
             return convertView;
         }
@@ -91,7 +96,8 @@ public class MainActivity extends SherlockListActivity {
             if (booksInfoText != null) {
                 BookList bookList = new BookParser().parseBookList(booksInfoText);
                 if (bookList != null) {
-                    setListAdapter(new BookListAdapter(MainActivity.this, bookList.getBooks()));
+                    books = bookList.getBooks();
+                    setListAdapter(new BookListAdapter(MainActivity.this));
                 }
             }
             setSupportProgressBarIndeterminateVisibility(false);

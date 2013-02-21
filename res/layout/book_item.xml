@@ -4,40 +4,38 @@
                 android:orientation="vertical"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="12dp"
-                android:paddingRight="12dp"
+                android:paddingLeft="16dp"
+                android:paddingRight="16dp"
                 android:paddingTop="8dp"
                 android:paddingBottom="8dp">
 	<ImageView
-			android:layout_width="80dp"
-			android:layout_height="120dp"
+			android:layout_width="45dp"
+			android:layout_height="60dp"
 			android:id="@+id/book_image"
 			android:layout_alignParentLeft="true"
 			android:contentDescription="@string/book_image_description"/>
 	<TextView
 			android:id="@+id/book_name"
 			android:layout_width="wrap_content"
-			android:layout_height="wrap_content" android:textSize="18sp"
-			android:layout_gravity="right|center_vertical" android:text="name" android:layout_alignParentLeft="true"
+			android:layout_height="wrap_content"
+			android:textSize="16sp"
+			android:layout_gravity="right|center_vertical"
+			android:text="Name"
+			android:layout_alignParentLeft="true"
 			android:layout_alignParentTop="true"
-			android:layout_marginTop="12dp" android:gravity="center_vertical"
-			android:layout_marginLeft="90dp"/>
+			android:gravity="center_vertical"
+			android:layout_marginLeft="62dp"
+			android:paddingTop="8dp"
+			android:paddingBottom="4dp"
+			android:textColor="@android:color/primary_text_light"/>
 	<TextView
-			android:id="@+id/book_isbn"
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:textSize="14sp"
-			android:text="isbn"
+			android:text="Author"
+			android:id="@+id/book_author"
+			android:textSize="12sp"
 			android:layout_alignLeft="@+id/book_name"
 			android:layout_below="@+id/book_name"
-			android:layout_centerVertical="true"/>
-	<TextView
-			android:layout_width="wrap_content"
-			android:layout_height="wrap_content"
-			android:text="author"
-			android:id="@+id/book_author"
-			android:textSize="14sp"
-			android:layout_alignLeft="@+id/book_isbn"
-			android:layout_below="@+id/book_isbn"
-			android:layout_centerVertical="true"/>
+			android:layout_centerVertical="true"
+			android:textColor="@android:color/tertiary_text_light"/>
 </RelativeLayout>
