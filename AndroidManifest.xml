@@ -9,7 +9,7 @@
 
 	<application android:icon="@drawable/icon" android:label="@string/app_name"
 	             android:theme="@style/Theme.Sherlock.Light.DarkActionBar">
-		<activity android:name=".ui.MainActivity">
+		<activity android:name=".ui.BookListActivity">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN"/>
 				<category android:name="android.intent.category.LAUNCHER"/>
