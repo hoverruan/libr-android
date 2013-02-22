@@ -21,6 +21,7 @@ import com.github.hoverruan.libr.mobile.domain.BookList;
 import com.github.hoverruan.libr.mobile.domain.BookParser;
 import com.github.hoverruan.libr.mobile.util.DownloadImageTask;
 import com.github.hoverruan.libr.mobile.util.DownloadJsonTask;
+import static com.github.hoverruan.libr.mobile.util.FileUtils.newFile;
 
 import java.io.File;
 import java.util.List;
@@ -37,7 +38,7 @@ public class MainActivity extends SherlockListActivity {
 
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 
-        setSupportProgressBarIndeterminateVisibility(true);
+//        setSupportProgressBarIndeterminateVisibility(true);
         new DownloadBooksInfo().execute("http://libr.herokuapp.com/api/books");
     }
 
@@ -100,7 +101,7 @@ public class MainActivity extends SherlockListActivity {
                     setListAdapter(new BookListAdapter(MainActivity.this));
                 }
             }
-            setSupportProgressBarIndeterminateVisibility(false);
+//            setSupportProgressBarIndeterminateVisibility(false);
         }
     }
 
@@ -114,15 +115,15 @@ public class MainActivity extends SherlockListActivity {
         }
 
         public void load() {
-            File imageFile = DownloadImageTask.calculateImageFile(MainActivity.this, "cover", book.getIsbn());
-            if (!imageFile.exists()) {
-                new DownloadImageTask(MainActivity.this, "cover", book.getIsbn()) {
+            File coverFile = newFile(MainActivity.this.getCacheDir(), "cover", book.buildFilename());
+            if (!coverFile.exists()) {
+                new DownloadImageTask(MainActivity.this, coverFile) {
                     protected void onPostExecute(File downloadedImageFile) {
                         loadImage(downloadedImageFile);
                     }
                 }.execute(book.getImage());
             } else {
-                loadImage(imageFile);
+                loadImage(coverFile);
             }
         }
 

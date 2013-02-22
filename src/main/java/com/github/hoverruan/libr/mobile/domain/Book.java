@@ -69,4 +69,14 @@ public class Book {
     public void setName(String name) {
         this.name = name;
     }
+
+    public String buildFilename() {
+        StringBuilder builder = new StringBuilder(isbn);
+        int pos = image.lastIndexOf('.');
+        if (pos > 0) {
+            String suffix = image.substring(pos);
+            builder.append(suffix);
+        }
+        return builder.toString();
+    }
 }
