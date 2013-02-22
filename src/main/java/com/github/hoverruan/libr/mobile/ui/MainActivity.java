@@ -3,6 +3,8 @@ package com.github.hoverruan.libr.mobile.ui;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,7 +15,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.actionbarsherlock.app.SherlockListActivity;
-import com.actionbarsherlock.view.Window;
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 import static com.github.hoverruan.libr.mobile.LibrConstants.TAG;
 import com.github.hoverruan.libr.mobile.R;
 import com.github.hoverruan.libr.mobile.domain.Book;
@@ -22,8 +25,10 @@ import com.github.hoverruan.libr.mobile.domain.BookParser;
 import com.github.hoverruan.libr.mobile.util.DownloadImageTask;
 import com.github.hoverruan.libr.mobile.util.DownloadJsonTask;
 import static com.github.hoverruan.libr.mobile.util.FileUtils.newFile;
+import com.github.hoverruan.libr.mobile.util.ToastUtils;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,15 +36,32 @@ import java.util.List;
  */
 public class MainActivity extends SherlockListActivity {
 
-    private List<Book> books;
+    private List<Book> books = new ArrayList<Book>();
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        if (books == null || books.size() == 0) {
+            if (isConnected()) {
+                new DownloadBooksInfo().execute("http://libr.herokuapp.com/api/books");
+            } else {
+                ToastUtils.show(this, R.string.failed_not_connected);
+            }
+        } else {
+            showBookList();
+        }
+    }
 
-//        setSupportProgressBarIndeterminateVisibility(true);
-        new DownloadBooksInfo().execute("http://libr.herokuapp.com/api/books");
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu.add(getString(R.string.search))
+                .setIcon(R.drawable.ic_search)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+        menu.add(getString(R.string.refresh))
+                .setIcon(R.drawable.ic_refresh)
+                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+        return true;
     }
 
     protected void onListItemClick(ListView l, View v, int position, long id) {
@@ -88,9 +110,6 @@ public class MainActivity extends SherlockListActivity {
     }
 
     private class DownloadBooksInfo extends DownloadJsonTask {
-        private DownloadBooksInfo() {
-            super(MainActivity.this);
-        }
 
         @Override
         protected void onPostExecute(String booksInfoText) {
@@ -98,10 +117,9 @@ public class MainActivity extends SherlockListActivity {
                 BookList bookList = new BookParser().parseBookList(booksInfoText);
                 if (bookList != null) {
                     books = bookList.getBooks();
-                    setListAdapter(new BookListAdapter(MainActivity.this));
+                    showBookList();
                 }
             }
-//            setSupportProgressBarIndeterminateVisibility(false);
         }
     }
 
@@ -117,9 +135,11 @@ public class MainActivity extends SherlockListActivity {
         public void load() {
             File coverFile = newFile(MainActivity.this.getCacheDir(), "cover", book.buildFilename());
             if (!coverFile.exists()) {
-                new DownloadImageTask(MainActivity.this, coverFile) {
+                new DownloadImageTask(coverFile) {
                     protected void onPostExecute(File downloadedImageFile) {
-                        loadImage(downloadedImageFile);
+                        if (downloadedImageFile != null) {
+                            loadImage(downloadedImageFile);
+                        }
                     }
                 }.execute(book.getImage());
             } else {
@@ -131,5 +151,17 @@ public class MainActivity extends SherlockListActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(imageFile.getPath());
             bookImageView.setImageBitmap(bitmap);
         }
+    }
+
+    private void showBookList() {
+        setListAdapter(new BookListAdapter(this));
+    }
+
+    private boolean isConnected() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+
+        return networkInfo != null && networkInfo.isConnected();
     }
 }

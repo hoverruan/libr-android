@@ -1,7 +1,5 @@
 package com.github.hoverruan.libr.mobile.util;
 
-import android.content.Context;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -11,9 +9,6 @@ import java.io.Reader;
  * @author Hover Ruan
  */
 public class DownloadJsonTask extends DownloadTask<String> {
-    public DownloadJsonTask(Context context) {
-        super(context);
-    }
 
     @Override
     protected String readIt(InputStream stream) throws IOException {

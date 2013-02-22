@@ -1,8 +1,5 @@
 package com.github.hoverruan.libr.mobile.util;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.github.hoverruan.libr.mobile.LibrConstants;
@@ -18,23 +15,14 @@ import java.net.URL;
  */
 public abstract class DownloadTask<Result> extends AsyncTask<String, Void, Result> {
 
-    public static final String CACHE_DIR = "com.github.hoverruan/libr/";
-    protected Context context;
-
-    public DownloadTask(Context context) {
-        this.context = context;
+    public DownloadTask() {
     }
 
     protected Result doInBackground(String... urls) {
-        if (!isConnected()) {
-            Log.w(LibrConstants.TAG, "No available connection");
-            return null;
-        }
-
         try {
             return downloadFromUrl(urls[0]);
         } catch (IOException e) {
-            Log.e(LibrConstants.TAG, "Failed to download content");
+            Log.e(LibrConstants.TAG, "Failed to download content", e);
             return null;
         }
     }
@@ -64,13 +52,5 @@ public abstract class DownloadTask<Result> extends AsyncTask<String, Void, Resul
                 is.close();
             }
         }
-    }
-
-    private boolean isConnected() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-
-        return networkInfo != null && networkInfo.isConnected();
     }
 }

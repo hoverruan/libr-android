@@ -5,4 +5,6 @@
 	<string name="failed_download">Failed to download content</string>
 	<string name="failed_not_connected">No available connection</string>
 	<string name="book_image_description">Book image</string>
+	<string name="search">Search</string>
+	<string name="refresh">Refresh</string>
 </resources>
