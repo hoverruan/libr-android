@@ -11,29 +11,17 @@ import java.io.InputStream;
  * @author Hover Ruan
  */
 public class DownloadImageTask extends DownloadTask<File> {
-    private String imageType;
-    private String imageId;
+    private File storeFile;
 
-    public DownloadImageTask(Context context, String imageType, String imageId) {
+    public DownloadImageTask(Context context, File storeFile) {
         super(context);
-        this.imageType = imageType;
-        this.imageId = imageId;
-    }
-
-    public static File calculateImageFile(Context contextParam, String imageTypeParam, String imageIdParam) {
-        File imageDir = new File(contextParam.getCacheDir(), CACHE_DIR + imageTypeParam);
-        if (!imageDir.isDirectory()) {
-            imageDir.mkdirs();
-        }
-
-        return new File(imageDir, imageIdParam);
+        this.storeFile = storeFile;
     }
 
     protected File readIt(InputStream stream) throws IOException {
-        File imageFile = calculateImageFile(context, imageType, imageId);
         FileOutputStream fileOutputStream = null;
         try {
-            fileOutputStream = new FileOutputStream(imageFile);
+            fileOutputStream = new FileOutputStream(storeFile);
             byte[] buf = new byte[1024];
             int len;
 
@@ -46,6 +34,6 @@ public class DownloadImageTask extends DownloadTask<File> {
             }
         }
 
-        return imageFile;
+        return storeFile;
     }
 }
