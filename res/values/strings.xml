@@ -7,4 +7,6 @@
 	<string name="book_image_description">Book image</string>
 	<string name="search">Search</string>
 	<string name="refresh">Refresh</string>
+	<string name="download">Download</string>
+	<string name="fetching_books">Fetching books ...</string>
 </resources>

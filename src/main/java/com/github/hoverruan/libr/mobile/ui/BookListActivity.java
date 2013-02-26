@@ -1,5 +1,6 @@
 package com.github.hoverruan.libr.mobile.ui;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -29,6 +30,7 @@ import java.util.List;
 public class BookListActivity extends SherlockListActivity {
 
     private List<Book> books = new ArrayList<Book>();
+    private ProgressDialog progressDialog;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,12 +74,21 @@ public class BookListActivity extends SherlockListActivity {
                     books = bookList.getBooks();
                     showBookList();
                 }
+                if (progressDialog.isShowing()) {
+                    progressDialog.cancel();
+                }
             }
         }
     }
 
     private void refreshNewBooks() {
         if (isConnected()) {
+            progressDialog = new ProgressDialog(this);
+            progressDialog.setTitle(R.string.download);
+            progressDialog.setMessage(getString(R.string.fetching_books));
+            progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
+            progressDialog.show();
             new DownloadBooksInfo().execute(LibrConstants.API_BOOKS);
         } else {
             ToastUtils.show(this, R.string.failed_not_connected);
