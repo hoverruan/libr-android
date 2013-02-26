@@ -74,8 +74,8 @@ public class BookListActivity extends SherlockListActivity {
                     books = bookList.getBooks();
                     showBookList();
                 }
-                if (progressDialog.isShowing()) {
-                    progressDialog.cancel();
+                if (progressDialog != null && progressDialog.isShowing()) {
+                    progressDialog.hide();
                 }
             }
         }
@@ -84,10 +84,9 @@ public class BookListActivity extends SherlockListActivity {
     private void refreshNewBooks() {
         if (isConnected()) {
             progressDialog = new ProgressDialog(this);
-            progressDialog.setTitle(R.string.download);
+            progressDialog.setTitle(R.string.update);
             progressDialog.setMessage(getString(R.string.fetching_books));
             progressDialog.setIndeterminate(true);
-            progressDialog.setCancelable(false);
             progressDialog.show();
             new DownloadBooksInfo().execute(LibrConstants.API_BOOKS);
         } else {
