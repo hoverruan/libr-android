@@ -3,7 +3,7 @@
 	<string name="app_name">Libr</string>
 	<string name="fetch_books_info">获取图书信息</string>
 	<string name="failed_download">无法下载数据</string>
-	<string name="failed_not_connected">没有可用的数据连接</string>
+	<string name="failed_not_connected">无法连接服务器</string>
 	<string name="book_image_description">图书封面</string>
 	<string name="search">搜索</string>
 	<string name="refresh">刷新</string>
