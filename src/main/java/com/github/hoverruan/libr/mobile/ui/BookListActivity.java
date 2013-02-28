@@ -2,6 +2,7 @@ package com.github.hoverruan.libr.mobile.ui;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import com.github.hoverruan.libr.mobile.domain.BookList;
 import com.github.hoverruan.libr.mobile.domain.BookParser;
 import com.github.hoverruan.libr.mobile.util.DownloadJsonTask;
 import com.github.hoverruan.libr.mobile.util.ToastUtils;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +44,23 @@ public class BookListActivity extends SherlockListActivity {
     protected void onStart() {
         super.onStart();
 
-        refreshNewBooks();
+        if (books == null || books.size() == 0) {
+            refreshNewBooks();
+        }
     }
 
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         menu.add(getString(R.string.search))
                 .setIcon(R.drawable.ic_search)
+                .setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        IntentIntegrator integrator = new IntentIntegrator(BookListActivity.this);
+                        integrator.initiateScan();
+
+                        return true;
+                    }
+                })
                 .setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
 
         menu.add(getString(R.string.refresh))
@@ -62,9 +76,18 @@ public class BookListActivity extends SherlockListActivity {
         return true;
     }
 
+    @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Book book = books.get(position);
         Log.i(TAG, book.getName() + " selected");
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (scanResult != null) {
+            String isbn = scanResult.getContents();
+            Log.i(TAG, "Got isbn: " + isbn);
+        }
     }
 
     private class DownloadBooksInfo extends DownloadJsonTask {
