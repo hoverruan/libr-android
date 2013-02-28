@@ -32,14 +32,16 @@ public class BookListActivity extends SherlockListActivity {
     private List<Book> books = new ArrayList<Book>();
     private ProgressDialog progressDialog;
 
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
-        if (books == null || books.size() == 0) {
-            refreshNewBooks();
-        } else {
-            showBookList();
-        }
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        refreshNewBooks();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -74,23 +76,33 @@ public class BookListActivity extends SherlockListActivity {
                     books = bookList.getBooks();
                     showBookList();
                 }
-                if (progressDialog != null && progressDialog.isShowing()) {
-                    progressDialog.hide();
-                }
+                hideProgressDialog();
             }
         }
     }
 
     private void refreshNewBooks() {
         if (isConnected()) {
+            showProgressDialog();
+            new DownloadBooksInfo().execute(LibrConstants.API_BOOKS);
+        } else {
+            ToastUtils.show(this, R.string.failed_not_connected);
+        }
+    }
+
+    private void showProgressDialog() {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(this);
             progressDialog.setTitle(R.string.update);
             progressDialog.setMessage(getString(R.string.fetching_books));
             progressDialog.setIndeterminate(true);
-            progressDialog.show();
-            new DownloadBooksInfo().execute(LibrConstants.API_BOOKS);
-        } else {
-            ToastUtils.show(this, R.string.failed_not_connected);
+        }
+        progressDialog.show();
+    }
+
+    private void hideProgressDialog() {
+        if (progressDialog != null && progressDialog.isShowing()) {
+            progressDialog.hide();
         }
     }
 
