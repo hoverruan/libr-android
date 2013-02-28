@@ -6,6 +6,8 @@ import java.util.Date;
  * @author Hover Ruan
  */
 public class Book {
+    public static final String EXTRA_BOOK_ISBN = "book_isbn";
+
     private long id;
     private String author;
     private Date createdAt;

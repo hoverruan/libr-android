@@ -80,14 +80,25 @@ public class BookListActivity extends SherlockListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Book book = books.get(position);
         Log.i(TAG, book.getName() + " selected");
+
+        viewBookDetails(book.getIsbn());
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         IntentResult scanResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (scanResult != null) {
             String isbn = scanResult.getContents();
-            Log.i(TAG, "Got isbn: " + isbn);
+            Log.i(TAG, "Scan isbn: " + isbn);
+
+            viewBookDetails(isbn);
         }
+    }
+
+    private void viewBookDetails(String isbn) {
+        Intent intent = new Intent(this, ViewBookActivity.class);
+        intent.putExtra(Book.EXTRA_BOOK_ISBN, isbn);
+
+        startActivity(intent);
     }
 
     private class DownloadBooksInfo extends DownloadJsonTask {
