@@ -1,6 +1,5 @@
 package com.github.hoverruan.libr.mobile.ui;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,11 +10,16 @@ import com.github.hoverruan.libr.mobile.R;
 import com.github.hoverruan.libr.mobile.domain.Book;
 import com.github.hoverruan.libr.mobile.domain.BookParser;
 import com.github.hoverruan.libr.mobile.util.DownloadJsonTask;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockActivity;
+import com.google.inject.Inject;
 
 /**
  * @author Hover Ruan
  */
-public class ViewBookActivity extends Activity {
+public class ViewBookActivity extends RoboSherlockActivity {
+    @Inject
+    private BookParser bookParser;
+
     private ProgressDialog progressDialog;
     private Book book;
 
@@ -44,7 +48,7 @@ public class ViewBookActivity extends Activity {
     private class DownloadBookDetailsTask extends DownloadJsonTask {
         @Override
         protected void onPostExecute(String bookInfo) {
-            Book book = new BookParser().parseBook(bookInfo);
+            Book book = bookParser.parseBook(bookInfo);
             if (book != null) {
                 Log.i(TAG, "Fetched book info: " + bookInfo);
                 ViewBookActivity.this.book = book;

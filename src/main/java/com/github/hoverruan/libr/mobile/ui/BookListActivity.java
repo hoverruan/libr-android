@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ListView;
-import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.github.hoverruan.libr.mobile.LibrConstants;
@@ -21,6 +20,8 @@ import com.github.hoverruan.libr.mobile.domain.BookList;
 import com.github.hoverruan.libr.mobile.domain.BookParser;
 import com.github.hoverruan.libr.mobile.util.DownloadJsonTask;
 import com.github.hoverruan.libr.mobile.util.ToastUtils;
+import com.github.rtyley.android.sherlock.roboguice.activity.RoboSherlockListActivity;
+import com.google.inject.Inject;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 
@@ -30,7 +31,10 @@ import java.util.List;
 /**
  * @author Hover Ruan
  */
-public class BookListActivity extends SherlockListActivity {
+public class BookListActivity extends RoboSherlockListActivity {
+
+    @Inject
+    private BookParser bookParser;
 
     private List<Book> books = new ArrayList<Book>();
     private ProgressDialog progressDialog;
@@ -79,7 +83,6 @@ public class BookListActivity extends SherlockListActivity {
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {
         Book book = books.get(position);
-        Log.i(TAG, book.getName() + " selected");
 
         viewBookDetails(book.getIsbn());
     }
@@ -105,7 +108,7 @@ public class BookListActivity extends SherlockListActivity {
         @Override
         protected void onPostExecute(String booksInfoText) {
             if (booksInfoText != null) {
-                BookList bookList = new BookParser().parseBookList(booksInfoText);
+                BookList bookList = bookParser.parseBookList(booksInfoText);
                 if (bookList != null) {
                     books = bookList.getBooks();
                     showBookList();

@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
  * @author Hover Ruan
  */
 public class BookParser {
+
     public BookList parseBookList(String json) {
         return createGson().fromJson(json, BookList.class);
     }

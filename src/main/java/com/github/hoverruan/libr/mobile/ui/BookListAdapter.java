@@ -22,9 +22,9 @@ class BookListAdapter extends BaseAdapter {
     private File cacheDir;
 
     BookListAdapter(LayoutInflater layoutInflater, File cacheDir, List<Book> books) {
+        this.inflater = layoutInflater;
         this.cacheDir = cacheDir;
         this.books = books;
-        this.inflater = layoutInflater;
     }
 
     public int getCount() {
